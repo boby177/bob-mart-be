@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { Neo4jModule } from './database/neo4j.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -15,6 +17,8 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       runtimeMetrics: !Boolean(process.versions?.['webcontainer']),
       serviceId: 'nest-typescript-starter',
     }),
+    ConfigModule.forRoot({ isGlobal: true }),
+    Neo4jModule,
   ],
   controllers: [AppController],
   providers: [AppService],
