@@ -14,10 +14,4 @@ export class AppController {
   health() {
     return this.neo4j.read('RETURN 1 AS ok');
   }
-
-  @ApiTags('products')
-  @Get('products')
-  products() {
-    return this.appService.getAllProducts();
-  }
 }

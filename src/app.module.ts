@@ -4,6 +4,7 @@ import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { Neo4jModule } from './database/neo4j.module.js';
+import { ProductsModule } from './api/products/products.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -19,6 +20,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     Neo4jModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

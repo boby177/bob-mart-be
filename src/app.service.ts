@@ -8,8 +8,4 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-
-  getAllProducts(): Promise<any> {
-    return this.neo4j.read('MATCH (p:Product) RETURN p');
-  }
 }
