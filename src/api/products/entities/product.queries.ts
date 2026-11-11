@@ -23,3 +23,8 @@ createdAt: datetime()
 Create (p)-[:IN_CATEGORY]->(c)
     RETURN p { .*, createdAt: toString(p.createdAt) } AS newProduct
 `;
+
+export const DELETE_PRODUCT = `
+MATCH (p:Product {id: $id})
+DETACH DELETE p
+`;

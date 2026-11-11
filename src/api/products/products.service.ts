@@ -6,6 +6,7 @@ import {
   FIND_ALL_PRODUCTS,
   FIND_PRODUCT_BY_ID,
   CREATE_PRODUCT,
+  DELETE_PRODUCT,
 } from './entities/product.queries.js';
 import { Product } from './entities/product.entity.js';
 
@@ -13,7 +14,7 @@ import { Product } from './entities/product.entity.js';
 export class ProductsService {
   constructor(private readonly neo4j: Neo4jService) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async createProduct(createProductDto: CreateProductDto) {
     const { name, description, price, stock, categoryId } = createProductDto;
     const id = crypto.randomUUID();
 
@@ -37,6 +38,10 @@ export class ProductsService {
 
   async findOne(id: string): Promise<Product> {
     const data = await this.neo4j.read(FIND_PRODUCT_BY_ID, { id });
+
+    if (!data.length) {
+      throw new NotFoundException(`Product not found`);
+    }
     return data[0].product;
   }
 
@@ -44,7 +49,11 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async deleteProduct(id: string) {
+    // Check if the product exists before attempting to delete
+    const product = await this.findOne(id.toString());
+
+    await this.neo4j.write(DELETE_PRODUCT, { id: product.id });
+    return { message: `Product ${product.name} has been deleted successfully` };
   }
 }
