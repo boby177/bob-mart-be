@@ -21,7 +21,7 @@ export class ProductsService {
     return data.map((r) => r.product);
   }
 
-  async findOne(id: number): Promise<Product> {
+  async findOne(id: string): Promise<Product> {
     const data = await this.neo4j.read(FIND_PRODUCT_BY_ID, { id });
     return data[0].product;
   }
