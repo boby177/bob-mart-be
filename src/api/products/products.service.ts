@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto.js';
 import { UpdateProductDto } from './dto/update-product.dto.js';
 import { Neo4jService } from '../../database/neo4j.service.js';
 import {
   FIND_ALL_PRODUCTS,
   FIND_PRODUCT_BY_ID,
+  CREATE_PRODUCT,
 } from './entities/product.queries.js';
 import { Product } from './entities/product.entity.js';
 
@@ -12,8 +13,21 @@ import { Product } from './entities/product.entity.js';
 export class ProductsService {
   constructor(private readonly neo4j: Neo4jService) {}
 
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  async create(createProductDto: CreateProductDto) {
+    const { name, description, price, stock, categoryId } = createProductDto;
+    const id = crypto.randomUUID();
+
+    const newProduct = await this.neo4j.write(CREATE_PRODUCT, {
+      id,
+      name,
+      description,
+      price,
+      stock,
+      categoryId,
+    });
+
+    if (!newProduct.length) throw new NotFoundException('Category not found');
+    return newProduct[0].newProduct;
   }
 
   async findAllProducts(): Promise<Product[]> {

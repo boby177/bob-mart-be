@@ -8,3 +8,18 @@ export const FIND_PRODUCT_BY_ID = `
   MATCH (p:Product { id: $id })
     RETURN p { .*, createdAt: toString(p.createdAt) } AS product
 `;
+
+export const CREATE_PRODUCT = `
+MATCH (c:Category {id: $categoryId})
+CREATE (p:Product {
+id: $id,
+name: $name,
+description: $description,
+price: $price,
+stock: $stock,
+createdAt: datetime()
+})
+
+Create (p)-[:IN_CATEGORY]->(c)
+    RETURN p { .*, createdAt: toString(p.createdAt) } AS newProduct
+`;

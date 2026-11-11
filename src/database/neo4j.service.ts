@@ -1,7 +1,7 @@
-import { Inject, Injectable, OnApplicationShutdown } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import neo4j, { Driver } from "neo4j-driver";
-import { NEO4J_DRIVER } from "./neo4j.constants.js";
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import neo4j, { Driver } from 'neo4j-driver';
+import { NEO4J_DRIVER } from './neo4j.constants.js';
 
 @Injectable()
 export class Neo4jService implements OnApplicationShutdown {
@@ -14,6 +14,14 @@ export class Neo4jService implements OnApplicationShutdown {
     const { records } = await this.driver.executeQuery(cypher, params, {
       database: this.config.get('NEO4J_DATABASE'),
       routing: neo4j.routing.READ,
+    });
+    return records.map((r) => r.toObject());
+  }
+
+  async write(cypher: string, params: Record<string, any> = {}) {
+    const { records } = await this.driver.executeQuery(cypher, params, {
+      database: this.config.getOrThrow<string>('NEO4J_DATABASE'),
+      routing: neo4j.routing.WRITE,
     });
     return records.map((r) => r.toObject());
   }
